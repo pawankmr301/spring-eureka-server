@@ -4,8 +4,8 @@ stages:
     - build
     - test
     - deploy
-    
+
 stage-1:
     stage: build
     script:
-        - mvn -version
+        - mvn clean install
