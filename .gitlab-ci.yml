@@ -1,4 +1,4 @@
-image: stephenreed/jenkins-java8-maven-git
+image: kaiwinter/docker-java8-maven
 
 stages:
     - build
