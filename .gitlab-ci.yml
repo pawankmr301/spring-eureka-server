@@ -1,0 +1,6 @@
+image: alpine:latest
+
+stages:
+  - build
+  - test
+
