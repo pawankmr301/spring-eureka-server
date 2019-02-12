@@ -8,4 +8,4 @@ stages:
 stage-1:
     stage: build
     script:
-        - echo "Hello World"
+        - mvn -version
