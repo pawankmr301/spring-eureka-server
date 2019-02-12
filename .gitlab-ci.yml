@@ -1,6 +1,11 @@
 image: alpine:latest
 
 stages:
-  - build
-  - test
-
+    - build
+    - test
+    - deploy
+    
+stage-1:
+    stage: build
+    script:
+        - echo "Hello World"
