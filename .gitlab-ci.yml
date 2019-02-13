@@ -3,19 +3,35 @@ image: pawankmr301/mycentosimage:tagname
 stages:
     - build
     
-buildstage:
-    stage: build
-    script:
-        - build_artifact
+build:
+  stage: build
+  image: docker:git
+  services:
+  - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  script:
+    - setup_docker
+    - build
+  only:
+    - branches
         
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
   
   
-  function build_artifact () {
+  function build () {
       mvn clean install
-      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/nexus/content/repositories/myrepo/
+      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/repository/myrepo/
+  }
+  
+    function setup_docker() {
+    if ! docker info &>/dev/null; then
+      if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+        export DOCKER_HOST='tcp://localhost:2375'
+      fi
+    fi
   }
  
 before_script:
