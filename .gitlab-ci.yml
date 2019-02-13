@@ -1,12 +1,27 @@
 image: pawankmr301/mycentosimage:tagname
 
-stages:
-    - build
-    - test
-    - deploy
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
-stage-1:
-    stage: build
-    script:
-        - mvn clean install
-        - curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/nexus/content/repositories/123/
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+deploy:
+  stage: deploy
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  only:
+    - master
