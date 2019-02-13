@@ -29,7 +29,6 @@ build:
   script:
     - setup_docker
     - build
-	- mvn clean install
   only:
     - branches
 
