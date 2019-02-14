@@ -68,11 +68,16 @@ deploy-uat:
   function install_tiller() {
       set -x
       echo "Checking Tiller..."
-      wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config 
-      kubectl create serviceaccount tiller --namespace "$TILLER_NAMESPACE"  --kubeconfig=.kube/config
-      wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
-      kubectl apply -f rbac-config.yaml
-      helm init --service-account tiller
+      if kubectl get serviceaccount --kubeconfig=.kube/config
+      then
+          echo "Tiller is already installed"
+      else
+          wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config 
+          kubectl create serviceaccount tiller --namespace "$TILLER_NAMESPACE"  --kubeconfig=.kube/config
+          wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
+          kubectl apply -f rbac-config.yaml
+          helm init --service-account tiller
+      fi
   }
 
   function ensure_namespace() {
