@@ -4,12 +4,12 @@ stages:
     - build_artifact
     - build_docker_image
     
-build:
+build-artifact:
   stage: build_artifact
   script:
     - build
 
-build:
+build-docker-image:
   stage: build_docker_image
   image: docker:stable
 
@@ -23,7 +23,7 @@ build:
     DOCKER_DRIVER: overlay2
 
   before_script:
-    - docker login -u pawankmr301 -p useme123 hub.docker.com
+    - docker login -u pawankmr301 --password-stdin useme123 hub.docker.com
 
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
