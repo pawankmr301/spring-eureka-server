@@ -6,8 +6,16 @@ stages:
     
 build-artifact:
   stage: build_artifact
+  image: pawankmr301/mycentosimage:tagname
+  services:
+  - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
   script:
+    - setup_docker
     - build
+  only:
+    - branches
 
 build-docker-image:
   stage: build_docker_image
@@ -28,7 +36,7 @@ build-docker-image:
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
-    - echo "docker push $CONTAINER_IMAGE:latest"
+    - echo "docker push $CI_PROJECT_PATH:latest"
 
         
 .auto_devops: &auto_devops |
