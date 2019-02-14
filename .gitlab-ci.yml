@@ -62,7 +62,7 @@ deploy-uat:
   
   
   function build () {
-      mvn clean install
+      mvn package
       curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/repository/testrepo/
   }
   
@@ -91,6 +91,7 @@ deploy-uat:
   }
 
    function download_chart() {
+    set -x
     if [[ ! -d chart ]]; then
       auto_chart=${AUTO_DEVOPS_CHART:-gitlab/auto-deploy-app}
       auto_chart_name=$(basename $auto_chart)
@@ -114,6 +115,7 @@ deploy-uat:
   }
 
     function install_tiller() {
+    set -x
     echo "Checking Tiller..."
     helm init --upgrade
     kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
