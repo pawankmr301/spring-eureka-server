@@ -44,6 +44,7 @@ build-docker-image:
 
 deploy-uat:
   stage: deploy_uat
+  image: openjdk:8-jre-alpine
   script:
     - install_dependencies
     - download_chart
@@ -139,6 +140,6 @@ deploy-uat:
     function ensure_namespace() {
     kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
   }
-  
+
 before_script:
 - *auto_devops
