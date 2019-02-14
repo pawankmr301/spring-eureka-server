@@ -77,11 +77,6 @@ deploy-uat:
   }
 
   function ensure_namespace() {
-      if [ ! -d .kube ]
-      then
-        mkdir .kube
-      fi
-
       wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
       kubectl describe namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config || kubectl create namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config
   }
