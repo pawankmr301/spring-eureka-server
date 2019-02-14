@@ -16,7 +16,7 @@ build:
   services:
     - docker: dind
   
-  variable:
+  variables:
     CI_PROJECT_PATH: pawankmr301/spring-eureka
     CONTAINER_IMAGE: hub.docker.com/$CI_PROJECT_PATH
     DOCKER_HOST: tcp://docker:2375
