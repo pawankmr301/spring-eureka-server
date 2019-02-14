@@ -1,12 +1,34 @@
 image: pawankmr301/mycentosimage:tagname
 
 stages:
-    - build
+    - build_artifact
+    - build_docker_image
     
 build:
-  stage: build
+  stage: build_artifact
   script:
     - build
+
+build:
+  stage: build_docker_image
+  image: docker:stable
+
+  service:
+    - docker: dind
+  
+  variable:
+    CI_PROJECT_PATH: pawankmr301/spring-eureka
+    CONTAINER_IMAGE: hub.docker.com/$CI_PROJECT_PATH
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+
+  before_script:
+    - docker login -u pawankmr301 -p useme123 hub.docker.com
+
+  script:
+    - docker pull $CONTAINER_IMAGE:latest || true
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
+
         
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
