@@ -36,7 +36,7 @@ build-docker-image:
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
-    - echo "docker push $CI_PROJECT_PATH:latest"
+    - docker push $CI_PROJECT_PATH:latest
 
         
 .auto_devops: &auto_devops |
