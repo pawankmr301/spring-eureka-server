@@ -9,7 +9,7 @@ stages:
     - deploy_uat
     - deploy_prod
     
-build-artifact:
+.build-artifact:
   stage: build_artifact
   image: pawankmr301/mycentosimage:tagname
   services:
@@ -22,7 +22,7 @@ build-artifact:
   only:
     - branches
 
-build-docker-image:
+.build-docker-image:
   stage: build_docker_image
   image: docker:stable
 
