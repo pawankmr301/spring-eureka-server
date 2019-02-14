@@ -140,7 +140,7 @@ deploy-uat:
     function ensure_namespace() {
     mkdir .kube
     wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
-    sleep 10
+    sleep 60
     cat .kube/config
     kubectl get nodes
     #kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
