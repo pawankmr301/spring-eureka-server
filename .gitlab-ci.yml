@@ -7,8 +7,9 @@ stages:
     - build_artifact
     - build_docker_image
     - deploy_uat
+    - deploy_prod
     
-.build-artifact:
+build-artifact:
   stage: build_artifact
   image: pawankmr301/mycentosimage:tagname
   services:
@@ -21,7 +22,7 @@ stages:
   only:
     - branches
 
-.build-docker-image:
+build-docker-image:
   stage: build_docker_image
   image: docker:stable
 
@@ -50,6 +51,7 @@ deploy-uat:
     - download_chart
     - ensure_namespace
     - install_tiller
+    - deploy
 
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
@@ -140,10 +142,48 @@ deploy-uat:
     function ensure_namespace() {
     mkdir .kube
     wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
-    sleep 60
-    cat .kube/config
-    kubectl get nodes
-    #kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+  }
+
+    function deploy() {
+    set -x
+    track="${1-stable}"
+    echo "track: ${track}"
+    name="$CI_ENVIRONMENT_SLUG"
+    echo "CI_ENVIRONMENT_SLUG:name: ${name}"
+
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+    fi
+
+    replicas="1"
+    service_enabled="false"
+    postgres_enabled="$POSTGRES_ENABLED"
+    # canary uses stable db
+    [[ "$track" == "canary" ]] && postgres_enabled="false"
+
+    env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
+    echo "env_track: ${env_track}"
+    
+    env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
+    echo "env_slug: ${env_slug}"
+    
+    if [[ "$track" == "stable" ]]; then
+      # for stable track get number of replicas from `PRODUCTION_REPLICAS`
+      eval new_replicas=\$${env_slug}_REPLICAS
+      echo "eval new_replicas=\$${env_slug}_REPLICAS"
+      service_enabled="true"
+    else
+      echo "else:"
+      # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
+      eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
+      echo "new_replicas: ${new_replicas}"
+    fi
+    if [[ -n "$new_replicas" ]]; then
+      replicas="$new_replicas"
+    fi
+
+    #helm upgrade --install --wait --set service.enabled="$service_enabled" --set releaseOverride="$CI_ENVIRONMENT_SLUG" --set image.repository="${CI_REGISTRY}/$CI_APPLICATION_REPOSITORY" --set image.tag="$CI_APPLICATION_TAG" --set image.pullPolicy=IfNotPresent --set application.track="$track" --set application.database_url="$DATABASE_URL" --set service.url="$CI_ENVIRONMENT_URL" --set replicaCount="$replicas" --set postgresql.enabled="$postgres_enabled" \--set postgresql.nameOverride="postgres" --set postgresql.postgresUser="$POSTGRES_USER" --set postgresql.postgresPassword="$POSTGRES_PASSWORD" --set postgresql.postgresDatabase="$POSTGRES_DB" --namespace="$KUBE_NAMESPACE" --version="$CI_PIPELINE_ID-$CI_JOB_ID" "$name" chart/
   }
 
 before_script:
