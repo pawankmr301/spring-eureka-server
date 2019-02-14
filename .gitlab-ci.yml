@@ -72,7 +72,7 @@ deploy-uat:
       then
           echo "Tiller is already installed"
           wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
-          kubectl apply -f rbac-config.yaml
+          kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
           helm init --service-account tiller
       else
           wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config 
