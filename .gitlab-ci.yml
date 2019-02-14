@@ -14,7 +14,7 @@ build:
   image: docker:stable
 
   services:
-    - docker: dind
+    - docker:dind
   
   variables:
     CI_PROJECT_PATH: pawankmr301/spring-eureka
