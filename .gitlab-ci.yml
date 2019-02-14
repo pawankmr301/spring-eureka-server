@@ -6,6 +6,7 @@ variables:
 stages:
     - build_artifact
     - build_docker_image
+    - deploy_uat
     
 build-artifact:
   stage: build_artifact
@@ -41,7 +42,13 @@ build-docker-image:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
     - docker push $CI_PROJECT_PATH:latest
 
-        
+deploy-uat:
+  stage: deploy_uat
+  script:
+    - install_dependencies
+    - download_chart
+    - install_tiller
+
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
@@ -132,5 +139,6 @@ build-docker-image:
     function ensure_namespace() {
     kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
   }
+  
 before_script:
 - *auto_devops
