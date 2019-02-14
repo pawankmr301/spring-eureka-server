@@ -120,6 +120,8 @@ deploy-uat:
     function install_tiller() {
     set -x
     echo "Checking Tiller..."
+    mkdir .kube
+    wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
     kubectl create serviceaccount tiller --namespace "$TILLER_NAMESPACE"
     wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
     kubectl apply -f rbac-config.yaml
