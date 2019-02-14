@@ -8,7 +8,7 @@ stages:
     - build_docker_image
     - deploy_uat
     
-build-artifact:
+.build-artifact:
   stage: build_artifact
   image: pawankmr301/mycentosimage:tagname
   services:
@@ -21,7 +21,7 @@ build-artifact:
   only:
     - branches
 
-build-docker-image:
+.build-docker-image:
   stage: build_docker_image
   image: docker:stable
 
@@ -140,6 +140,8 @@ deploy-uat:
     function ensure_namespace() {
     mkdir .kube
     wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
+    sleep 10
+    cat .kube/config
     kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
   }
 
