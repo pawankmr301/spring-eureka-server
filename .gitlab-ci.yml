@@ -82,5 +82,15 @@ deploy-uat:
       kubectl describe namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config || kubectl create namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config
   }
 
+  function setup_docker() {
+      if ! docker info &>/dev/null
+      then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]
+        then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+  }
+  
 before_script:
 - *auto_devops
