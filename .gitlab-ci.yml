@@ -47,6 +47,7 @@ deploy-uat:
   stage: deploy_uat
   image: pawankmr301/alpine-eia:latest
   script:
+    - export_kubeconfig
     - ensure_namespace
     - install_tiller
 
@@ -59,7 +60,7 @@ deploy-uat:
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export KUBE_NAMESPACE=default
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
-
+  
   function build () {
       mvn package
       curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/repository/testrepo/
@@ -68,18 +69,23 @@ deploy-uat:
   function install_tiller() {
       set -x
       echo "Checking Tiller..."
+
+      wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
+      wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
+
       if kubectl get serviceaccount --kubeconfig=.kube/config
       then
-          echo "Tiller is already installed"
-          wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
-          kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
-          helm init --service-account tiller --kubeconfig .kube/config
+          echo "serviceaccount Account already there"
       else
-          wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config 
           kubectl create serviceaccount tiller --namespace "$TILLER_NAMESPACE"  --kubeconfig=.kube/config
-          wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
+      fi
+
+      if kubectl get pods --all-namespaces --kubeconfig=.kube/config | grep tiller | grep -v grep 
+      then
+          echo "Tiller is already installed"
+      else
           kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
-          helm init --service-account tiller --kubeconfig .kube/config
+          helm init --service-account tiller --kubeconfig=.kube/config
       fi
   }
 
@@ -97,6 +103,10 @@ deploy-uat:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
+  }
+
+  function export_kubeconfig {
+      export KUBECONFIG=$HOME/.kube/config
   }
 
 before_script:
