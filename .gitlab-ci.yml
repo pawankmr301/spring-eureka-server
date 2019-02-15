@@ -59,7 +59,7 @@ deploy-uat:
   export CI_APPLICATION_TAG=$CI_COMMIT_SHA
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export KUBE_NAMESPACE=default
-  export TILLER_NAMESPACE=$KUBE_NAMESPACE
+  export TILLER_NAMESPACE=kube-system
   
   function build () {
       mvn package
@@ -73,16 +73,9 @@ deploy-uat:
       wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
       wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
 
-      if kubectl get serviceaccount --kubeconfig=.kube/config
+      if kubectl get serviceaccount --kubeconfig=.kube/config -n $TILLER_NAMESPACE
       then
           echo "serviceaccount Account already there"
-      else
-          kubectl create serviceaccount tiller --namespace "$TILLER_NAMESPACE"  --kubeconfig=.kube/config
-      fi
-
-      if kubectl get pods --all-namespaces --kubeconfig=.kube/config | grep tiller | grep -v grep 
-      then
-          echo "Tiller is already installed"
       else
           kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
           helm init --service-account tiller --kubeconfig=.kube/config
