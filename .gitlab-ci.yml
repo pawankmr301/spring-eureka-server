@@ -78,7 +78,8 @@ deploy-uat:
           echo "serviceaccount Account already there"
       else
           kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
-          helm init --service-account tiller --kubeconfig=.kube/config
+          export KUBECONFIG=.kube/config
+          helm init --service-account tiller
       fi
   }
 
