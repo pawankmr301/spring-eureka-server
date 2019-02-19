@@ -43,7 +43,7 @@ build-docker-image:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
     - docker push $CI_PROJECT_PATH:latest
 
-deploy-uat:
+.deploy-uat:
   stage: deploy_uat
   image: pawankmr301/alpine-eia:latest
   script:
