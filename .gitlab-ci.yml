@@ -40,8 +40,13 @@ build-docker-image:
 
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
-    - docker push $CI_PROJECT_PATH:latest
+    - docker build -t ${CI_PROJECT_NAME}:${CI_JOB_NAME} -f Dockerfile
+    - docker tag ${CI_PROJECT_NAME}:${CI_JOB_NAME} pawankmr301/${CI_PROJECT_NAME}
+    - test ! -z "${CI_PROJECT_NAME}" && docker push pawankmr301/${CI_PROJECT_NAME}
+  #  - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
+    - docker push pawankmr301/${CI_PROJECT_NAME}:${CI_JOB_NAME}
+  dependencies:
+    - build-artifact
 
 .deploy-uat:
   stage: deploy_uat
@@ -66,7 +71,7 @@ build-docker-image:
   
   function build () {
       mvn package
-      #curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
+      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
   }
 
   function install_tiller() {
@@ -117,6 +122,6 @@ build-docker-image:
       export KUBECONFIG=$HOME/.kube/config
       helm install $helm_chart_name
   }
-  
+
 before_script:
 - *auto_devops
