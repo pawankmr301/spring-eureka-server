@@ -17,7 +17,7 @@ build-artifact:
   variables:
     DOCKER_DRIVER: overlay2
   script:
-    - setup_docker
+    - mvn clean install
     - build
   only:
     - branches
@@ -50,6 +50,7 @@ deploy-uat:
     - export_kubeconfig
     - ensure_namespace
     - install_tiller
+    - instal_helm_chart
 
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
@@ -60,32 +61,41 @@ deploy-uat:
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export KUBE_NAMESPACE=default
   export TILLER_NAMESPACE=kube-system
+  export ipaddress=18.214.202.26
+  export helm_chart_name=amwaychart
   
   function build () {
       mvn package
-      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://34.231.201.41:8081/repository/testrepo/
+      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
   }
 
   function install_tiller() {
       set -x
       echo "Checking Tiller..."
 
-      wget http://34.231.201.41:8081/repository/testrepo/rbac-config.yaml
-      wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
+      wget http://$ipaddress:8081/repository/testrepo/rbac-config.yaml
+      wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
 
       if kubectl get serviceaccount --kubeconfig=.kube/config -n $TILLER_NAMESPACE | grep tiller
       then
           echo "serviceaccount Account already there"
       else
-          kubectl apply -f rbac-config.yaml --kubeconfig=.kube/config
+          kubectl create serviceaccount --namespace kube-system tiller  --kubeconfig=.kube/config
+          kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller  --kubeconfig=.kube/config
+          kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'  --kubeconfig=.kube/config
           export KUBECONFIG=.kube/config
-          helm init --service-account tiller
+          helm init --service-account tiller --upgrade
       fi
+  }
+
+  function deploy_helm () {
+    helm template amway-chart/
+    helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80 --set 
   }
 
   function ensure_namespace() {
       mkdir .kube
-      wget -c  http://34.231.201.41:8081/repository/testrepo/config -O .kube/config
+      wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
       kubectl describe namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config || kubectl create namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config
   }
 
@@ -103,5 +113,10 @@ deploy-uat:
       export KUBECONFIG=$HOME/.kube/config
   }
 
+  function instal_helm_chart {
+      export KUBECONFIG=$HOME/.kube/config
+      helm install $helm_chart_name
+  }
+  
 before_script:
 - *auto_devops
