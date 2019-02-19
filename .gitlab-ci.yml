@@ -66,7 +66,7 @@ build-docker-image:
   
   function build () {
       mvn package
-      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
+      #curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
   }
 
   function install_tiller() {
