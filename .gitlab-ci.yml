@@ -61,7 +61,7 @@ build-docker-image:
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export KUBE_NAMESPACE=default
   export TILLER_NAMESPACE=kube-system
-  export ipaddress=18.214.202.26
+  export ipaddress=192.168.99.101
   export helm_chart_name=amwaychart
   
   function build () {
