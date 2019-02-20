@@ -15,7 +15,9 @@ build-artifact:
     DOCKER_DRIVER: overlay2
   script:
     - mvn clean install
-    
+  artifacts:
+    paths:
+      - target/spring-eureka-server-*.jar
   only:
     - branches
 
@@ -40,7 +42,7 @@ build-docker-image:
     - docker build -t ${CI_PROJECT_NAME}:${CI_JOB_NAME} .
     - docker tag ${CI_PROJECT_NAME}:${CI_JOB_NAME} pawankmr301/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push pawankmr301/${CI_PROJECT_NAME}
-  #  - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
+    #- docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
     - docker push pawankmr301/${CI_PROJECT_NAME}:${CI_JOB_NAME}
   dependencies:
     - build-artifact
@@ -118,6 +120,12 @@ build-docker-image:
   function instal_helm_chart {
       export KUBECONFIG=$HOME/.kube/config
       helm install $helm_chart_name
+  }
+
+  function codeclimate() {
+    docker pull codeclimate/codeclimate:0.69.0 
+    docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 init
+    docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
   }
 
 before_script:
