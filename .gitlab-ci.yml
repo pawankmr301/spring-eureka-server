@@ -92,12 +92,20 @@ deployment-uat:
 
       if [[  `kubectl get  serviceaccount --namespace kube-system tiller --kubeconfig=.kube/config | grep tiller | wc -l ` -eq 0 ]]
       then
-        echo "Let's Create the Tiller service account"
-        kubectl create serviceaccount --namespace kube-system tiller --kubeconfig=.kube/confi
+          echo "Let's Create the Tiller service account"
+          kubectl create serviceaccount --namespace kube-system tiller --kubeconfig=.kube/confi
       else
-        echo "Tiller service account Already there"
+          echo "Tiller service account Already there"
       fi
-          kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller  --kubeconfig=.kube/config
+
+      if [[ `kubectl get clusterrolebinding | grep  tiller-cluster-rule | wc -l ` -eq 0 ]]
+      then
+          echo "Lets create the clusterrolebinding"
+          echo "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller  --kubeconfig=.kube/config"
+      else
+          echo "clusterrolebinding Already Created"
+      fi
+      
           echo "Let's wait for 30 second `date`" ; sleep 30
           kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'  --kubeconfig=.kube/config
           export KUBECONFIG=.kube/config
