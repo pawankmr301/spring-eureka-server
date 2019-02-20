@@ -52,6 +52,7 @@ deployment-uat:
   image: pawankmr301/alpine-eia:latest
   script:
     - git clone https://github.com/pawankmr301/helmchart.git
+    - mkdir .kube
     - cp helmchart/config .kube/config
     - export_kubeconfig
     - ensure_namespace
@@ -105,7 +106,6 @@ deployment-uat:
   }
 
   function ensure_namespace() {
-      mkdir .kube
       #wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
       kubectl describe namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config || kubectl create namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config
   }
