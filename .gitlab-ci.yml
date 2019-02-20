@@ -58,6 +58,7 @@ deployment-uat:
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
+    - helm del --purge amway
     - deploy_helm
 
 .deploy-uat:
