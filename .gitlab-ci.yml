@@ -51,15 +51,15 @@ deployment-uat:
   stage: deploy_uat
   image: pawankmr301/alpine-eia:latest
   script:
-    - export KUBECONFIG=.kube/config
-    - helm -h
-    - helm version
     - git clone https://github.com/pawankmr301/helmchart.git
     - mkdir .kube
     - cp helmchart/config .kube/config
+    - export KUBECONFIG=.kube/config
+    - install_tiller
+    - helm -h
+    - helm version
     - export_kubeconfig
     - ensure_namespace
-    - install_tiller
     - deploy_helm
 
 .deploy-uat:
