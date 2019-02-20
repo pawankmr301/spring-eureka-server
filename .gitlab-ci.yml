@@ -18,7 +18,7 @@ build-artifact:
     - ls -ld *
   artifacts:
     paths:
-      - target/
+      - target/spring-eureka-server*.jar
   only:
     - branches
 
