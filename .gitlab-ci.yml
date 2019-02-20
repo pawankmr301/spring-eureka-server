@@ -47,16 +47,16 @@ build-docker-image:
   dependencies:
     - build-artifact
 
-  deployment-helm:
-    stage: deploy_uat
-    image: pawankmr301/spring-eureka
-    script:
-      - git clone https://github.com/pawankmr301/helmchart.git
-      - cp helmchart/config .kube/config
-      - export_kubeconfig
-      - ensure_namespace
-      - install_tiller
-      - instal_helm_chart
+deployment-uat:
+  stage: deploy_uat
+  image: pawankmr301/alpine-eia:latest
+  script:
+    - git clone https://github.com/pawankmr301/helmchart.git
+    - cp helmchart/config .kube/config
+    - export_kubeconfig
+    - ensure_namespace
+    - install_tiller
+    - instal_helm_chart
 
 .deploy-uat:
   stage: deploy_uat
