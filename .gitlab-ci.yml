@@ -43,10 +43,20 @@ build-docker-image:
     - docker build -t ${CI_PROJECT_NAME}:latest .
     - docker tag ${CI_PROJECT_NAME}:latest pawankmr301/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push pawankmr301/${CI_PROJECT_NAME}
-    #- docker build --cache-from $CONTAINER_IMAGE:latest --tag $CI_PROJECT_PATH:latest .
     - docker push pawankmr301/${CI_PROJECT_NAME}:latest
   dependencies:
     - build-artifact
+
+  deployment:
+    stage: deploy_uat
+    image: pawankmr301/spring-eureka
+    script:
+      - git clone https://github.com/pawankmr301/helmchart.git
+      - cp helmchart/config .kube/config
+      - export_kubeconfig
+      - ensure_namespace
+      - install_tiller
+      - instal_helm_chart
 
 .deploy-uat:
   stage: deploy_uat
@@ -69,17 +79,13 @@ build-docker-image:
   export ipaddress=192.168.99.101
   export helm_chart_name=amwaychart
   
-  function build () {
-      mvn package
-      curl  -u admin:admin123  --upload-file target/spring-eureka-server-0.0.1-SNAPSHOT.jar http://$ipaddress:8081/repository/testrepo/
-  }
 
   function install_tiller() {
       set -x
       echo "Checking Tiller..."
 
-      wget http://$ipaddress:8081/repository/testrepo/rbac-config.yaml
-      wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
+      #wget http://$ipaddress:8081/repository/testrepo/rbac-config.yaml
+      #wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
 
       if kubectl get serviceaccount --kubeconfig=.kube/config -n $TILLER_NAMESPACE | grep tiller
       then
@@ -95,12 +101,12 @@ build-docker-image:
 
   function deploy_helm () {
     helm template amway-chart/
-    helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80 --set 
+    helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
 
   function ensure_namespace() {
       mkdir .kube
-      wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
+      #wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
       kubectl describe namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config || kubectl create namespace "$KUBE_NAMESPACE" --kubeconfig=.kube/config
   }
 
