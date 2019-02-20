@@ -111,6 +111,7 @@ deployment-uat:
 
   function deploy_helm () {
     helm lint helmchart/
+    helm template helmchart/
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
 
