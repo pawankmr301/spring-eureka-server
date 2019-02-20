@@ -47,7 +47,7 @@ build-docker-image:
   dependencies:
     - build-artifact
 
-  deployment:
+  deployment-helm:
     stage: deploy_uat
     image: pawankmr301/spring-eureka
     script:
