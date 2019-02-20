@@ -51,6 +51,8 @@ deployment-uat:
   stage: deploy_uat
   image: pawankmr301/alpine-eia:latest
   script:
+    - export KUBECONFIG=.kube/config
+    - helm -h
     - helm version
     - git clone https://github.com/pawankmr301/helmchart.git
     - mkdir .kube
