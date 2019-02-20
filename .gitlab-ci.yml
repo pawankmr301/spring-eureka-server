@@ -58,7 +58,6 @@ deployment-uat:
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
-    - helm del --purge amway
     - deploy_helm
 
 .deploy-uat:
@@ -114,6 +113,7 @@ deployment-uat:
     helm lint helmchart/
     helm template helmchart/
     echo "Let's Deploy the Service on Kubernetes Cluster using Helm"
+    helm del --purge amway --kubeconfig .kube/config
     helm install --name amway helmchart --kubeconfig .kube/config
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
