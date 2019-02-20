@@ -1,8 +1,5 @@
 image: pawankmr301/alpine-eia:latest
 
-variables:
-  AUTO_DEVOPS_DOMAIN: ip-192-168-223-224.us-west-2.compute.internal
-
 stages:
     - build_artifact
     - build_docker_image
@@ -18,7 +15,7 @@ build-artifact:
     DOCKER_DRIVER: overlay2
   script:
     - mvn clean install
-    - build
+    
   only:
     - branches
 
