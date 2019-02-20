@@ -57,7 +57,7 @@ deployment-uat:
     - export_kubeconfig
     - ensure_namespace
     - install_tiller
-    - instal_helm_chart
+    - deploy_helm
 
 .deploy-uat:
   stage: deploy_uat
@@ -78,7 +78,6 @@ deployment-uat:
   export KUBE_NAMESPACE=default
   export TILLER_NAMESPACE=kube-system
   export ipaddress=192.168.99.101
-  export helm_chart_name=amwaychart
   
 
   function install_tiller() {
@@ -123,11 +122,6 @@ deployment-uat:
 
   function export_kubeconfig {
       export KUBECONFIG=$HOME/.kube/config
-  }
-
-  function instal_helm_chart {
-      export KUBECONFIG=$HOME/.kube/config
-      helm install $helm_chart_name
   }
 
   function codeclimate() {
