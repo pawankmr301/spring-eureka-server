@@ -107,9 +107,8 @@ deployment-uat:
       fi
       
           echo "Let's wait for 30 second `date`" ; sleep 30
-          kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'  --kubeconfig=.kube/config
-          export KUBECONFIG=.kube/config
           helm init --service-account tiller --upgrade
+          kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'  --kubeconfig=.kube/config
   }
 
   function deploy_helm () {
