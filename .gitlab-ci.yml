@@ -17,7 +17,7 @@ build-artifact:
     - mvn clean install
   artifacts:
     paths:
-      - target/spring-eureka-server-*.jar
+      - target/
   only:
     - branches
 
