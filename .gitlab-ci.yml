@@ -34,6 +34,9 @@ build-docker-image:
     CONTAINER_IMAGE: 13.232.182.42:8082/alpine-eia
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    
+  before_script:
+    - echo "useme123" | docker login --username pawankmr301 --password-stdin
 
   script:
     - cat /etc/docker/daemon.json
