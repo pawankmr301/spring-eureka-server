@@ -36,6 +36,7 @@ build-docker-image:
     DOCKER_DRIVER: overlay2
 
   script:
+    - docker login -u admin -p admin123 13.232.182.42:8082
     - docker build -t ${CI_PROJECT_NAME}:latest .
     - docker tag ${CI_PROJECT_NAME}:latest 13.232.182.42:8083/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push 13.232.182.42:8083/${CI_PROJECT_NAME}
