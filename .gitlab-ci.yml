@@ -1,4 +1,4 @@
-image: pawankmr301/alpine-eia:latest
+#image: pawankmr301/alpine-eia:latest
 
 stages:
     - build_artifact
