@@ -27,7 +27,7 @@ build-docker-image:
   image: 13.232.182.42:8082/alpine-eia:latest
 
   services:
-    - docker:dind
+    - 13.232.182.42:8082/alpine-eia:latest
   
   variables:
     CI_PROJECT_PATH: spring-eureka
