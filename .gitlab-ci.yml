@@ -8,7 +8,7 @@ stages:
     
 build-artifact:
   stage: build_artifact
-  image: 13.232.182.42:8083/alpine-eia:latest
+  image: 13.232.182.42:8082/alpine-eia:latest
   services:
   - docker:dind
   variables:
