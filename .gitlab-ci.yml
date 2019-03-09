@@ -38,8 +38,7 @@ build-docker-image:
   script:
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
-    - echo "docker build -t ${CI_PROJECT_NAME}:latest ."
-    - exit 1
+    - docker build -t ${CI_PROJECT_NAME}:latest .
     - docker tag ${CI_PROJECT_NAME}:latest 13.232.182.42:8083/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push 13.232.182.42:8083/${CI_PROJECT_NAME}
     - docker push 13.232.182.42:8083/${CI_PROJECT_NAME}:latest
