@@ -1,4 +1,4 @@
-#image: pawankmr301/alpine-eia:latest
+image: 13.232.182.42:8082/alpine-eia:latest
 
 stages:
     - build_artifact
