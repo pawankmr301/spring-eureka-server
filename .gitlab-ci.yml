@@ -13,9 +13,9 @@ build-artifact:
   - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-  before_script:
-    - docker login -u admin -p admin123 13.232.182.42:8082
-    - docker login -u admin -p admin123 13.232.182.42:8083
+  #before_script:
+  #  - docker login -u admin -p admin123 13.232.182.42:8082
+  #  - docker login -u admin -p admin123 13.232.182.42:8083
     
   script:
     - mvn clean install
