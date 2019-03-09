@@ -6,7 +6,7 @@ stages:
     - deploy_uat
     - deploy_prod
     
-.build-artifact:
+build-artifact:
   stage: build_artifact
   image: 13.232.182.42:8082/alpine-eia:latest
   services:
@@ -15,7 +15,7 @@ stages:
     DOCKER_DRIVER: overlay2
     
   script:
-    - mvn clean install
+    - mvn package
     - ls -ld *
   artifacts:
     paths:
