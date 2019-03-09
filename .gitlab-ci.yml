@@ -34,9 +34,6 @@ build-docker-image:
     CONTAINER_IMAGE: 13.232.182.42:8082/alpine-eia
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
-    
-  before_script:
-    - docker login -u admin -p admin123 13.232.182.42:8082
 
   script:
     - cat /etc/docker/daemon.json
