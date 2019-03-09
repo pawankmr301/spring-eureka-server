@@ -25,7 +25,7 @@ build-artifact:
 
 build-docker-image:
   stage: build_docker_image
-  image: 13.232.182.42:8082/alpine-eia:latest
+  image: docker:stable
 
   services:
     - docker:dind
