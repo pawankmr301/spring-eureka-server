@@ -15,7 +15,6 @@ build-artifact:
     DOCKER_DRIVER: overlay2
     
   script:
-    - mvn package
     - ls -ld *
   artifacts:
     paths:
