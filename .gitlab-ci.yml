@@ -32,7 +32,7 @@ build-docker-image:
   
   variables:
     CI_PROJECT_PATH: 13.232.182.42:8083/spring-eureka
-    CONTAINER_IMAGE: 13.232.182.42:8082/alpine-eia:latest
+    CONTAINER_IMAGE: 13.232.182.42:8082/alpine-eia
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
 
