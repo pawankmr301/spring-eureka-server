@@ -24,7 +24,7 @@ build-artifact:
 
 build-docker-image:
   stage: build_docker_image
-  image: image: docker:stable
+  image: docker:stable
 
   services:
     - docker:dind
