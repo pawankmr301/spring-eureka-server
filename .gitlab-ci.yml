@@ -6,7 +6,7 @@ stages:
     - deploy_uat
     - deploy_prod
     
-build-artifact:
+.build-artifact:
   stage: build_artifact
   image: 13.232.182.42:8082/alpine-eia:latest
   services:
@@ -37,12 +37,11 @@ build-docker-image:
     DOCKER_DRIVER: overlay2
     
   before_script:
-    - echo "useme123" | docker login --username pawankmr301 --password-stdin
+    - setup_docker
 
   script:
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
-    - export DOCKER_HOST=tcp://13.233.186.32:2375
     - docker build -t ${CI_PROJECT_NAME}:latest .
     - docker tag ${CI_PROJECT_NAME}:latest 13.232.182.42:8083/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push 13.232.182.42:8083/${CI_PROJECT_NAME}
@@ -50,7 +49,7 @@ build-docker-image:
   dependencies:
     - build-artifact
 
-deployment-uat:
+.deployment-uat:
   stage: deploy_uat
   image: 13.232.182.42:8082/alpine-eia
   script:
