@@ -6,7 +6,7 @@ stages:
     - deploy_uat
     - deploy_prod
     
-build-artifact:
+.build-artifact:
   stage: build_artifact
   image: 13.232.182.42:8082/alpine-eia:latest
   services:
@@ -23,7 +23,7 @@ build-artifact:
   only:
     - branches
 
-build-docker-image:
+.build-docker-image:
   stage: build_docker_image
   image: 13.232.182.42:8082/alpine-eia:latest
 
@@ -50,10 +50,13 @@ build-docker-image:
   dependencies:
     - build-artifact
 
-.deployment-uat:
+deployment-uat:
   stage: deploy_uat
-  image: pawankmr301/alpine-eia:latest
+  image: 13.232.182.42:8082/alpine-eia
   script:
+    - helm repo add chartmuseum http://13.232.182.42:8080
+    - helm search chartmuseum/
+    - exit 1
     - git clone https://github.com/pawankmr301/helmchart.git
     - mkdir .kube
     - cp helmchart/config .kube/config
