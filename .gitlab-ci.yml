@@ -58,6 +58,7 @@ deployment-uat:
     - helm repo add chartmuseum http://13.232.182.42:8080
     - helm search chartmuseum/
     - helm fetch chartmuseum/amway-chart
+    - helm lint amwaychart
     - ls -l 
     - exit 1
     - install_tiller
