@@ -36,10 +36,9 @@ build-docker-image:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
     
-  before_script:
-    - setup_docker
 
   script:
+    - setup_docker
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
     - docker build -t ${CI_PROJECT_NAME}:latest .
