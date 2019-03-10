@@ -59,9 +59,6 @@ deployment-uat:
     - helm search chartmuseum/
     - helm fetch chartmuseum/amway-chart
     - helm lint amwaychart
-    - cat amwaychart/values.yaml
-    - ls -l 
-    - exit 1
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
@@ -117,11 +114,11 @@ deployment-uat:
   }
 
   function deploy_helm () {
-    helm lint chartmuseum/amway-chart
-    helm template chartmuseum/amway-chart
+    helm lint amwaychart
+    helm template amwaychart
     echo "Let's Deploy the Service on Kubernetes Cluster using Helm"
     helm del --purge amway 
-    helm install --name amway chartmuseum/amway-chart
+    helm install --name amway amwaychart
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
 
