@@ -117,7 +117,7 @@ deployment-uat:
     helm lint amwaychart
     helm template amwaychart
     echo "Let's Deploy the Service on Kubernetes Cluster using Helm"
-    helm del --purge amway 
+    #helm del --purge amway 
     helm install --name amway amwaychart
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
