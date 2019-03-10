@@ -93,7 +93,7 @@ deployment-uat:
       if [[  `kubectl get  serviceaccount --namespace kube-system tiller --kubeconfig=.kube/config | grep tiller | wc -l ` -eq 0 ]]
       then
           echo "Let's Create the Tiller service account"
-          kubectl create serviceaccount --namespace kube-system tiller --kubeconfig=.kube/confi
+          kubectl create serviceaccount --namespace kube-system tiller --kubeconfig=.kube/config
       else
           echo "Tiller service account Already there"
       fi
