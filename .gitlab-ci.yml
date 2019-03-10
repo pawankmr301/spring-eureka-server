@@ -6,7 +6,7 @@ stages:
     - deploy_uat
     - deploy_prod
     
-.build-artifact:
+build-artifact:
   stage: build_artifact
   image: 13.232.182.42:8082/alpine-eia:latest
   services:
@@ -23,7 +23,7 @@ stages:
   only:
     - branches
 
-.build-docker-image:
+build-docker-image:
   stage: build_docker_image
   image: 13.232.182.42:8082/alpine-eia:latest
 
