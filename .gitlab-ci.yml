@@ -38,7 +38,7 @@ build-docker-image:
     
 
   script:
-    - setup_docker
+    - export DOCKER_HOST=tcp://13.233.186.32:2375
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
     - docker build -t ${CI_PROJECT_NAME}:latest .
