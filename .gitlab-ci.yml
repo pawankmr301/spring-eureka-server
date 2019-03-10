@@ -41,6 +41,7 @@ build-docker-image:
   script:
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
+    - export DOCKER_HOST=tcp://13.233.186.32:2375
     - docker build -t ${CI_PROJECT_NAME}:latest .
     - docker tag ${CI_PROJECT_NAME}:latest 13.232.182.42:8083/${CI_PROJECT_NAME}
     - test ! -z "${CI_PROJECT_NAME}" && docker push 13.232.182.42:8083/${CI_PROJECT_NAME}
