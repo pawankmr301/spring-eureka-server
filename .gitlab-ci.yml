@@ -57,6 +57,7 @@ deployment-uat:
     - kubectl get nodes
     - helm repo add chartmuseum http://13.232.182.42:8080
     - helm search chartmuseum/
+    - helm fetch chartmuseum/amway-chart
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
