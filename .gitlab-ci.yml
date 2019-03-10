@@ -36,7 +36,6 @@ build-docker-image:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
     
-
   script:
     - export DOCKER_HOST=tcp://13.233.186.32:2375
     - cat /etc/docker/daemon.json
