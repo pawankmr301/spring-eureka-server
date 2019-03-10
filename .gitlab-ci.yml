@@ -59,7 +59,7 @@ deployment-uat:
     - helm search chartmuseum/
     - helm fetch chartmuseum/amway-chart
     - helm lint amwaychart
-    - cat amwaychart/values.yml
+    - ls -l amwaychart/*.yaml
     - ls -l 
     - exit 1
     - install_tiller
