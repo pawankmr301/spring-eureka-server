@@ -55,7 +55,6 @@ deployment-uat:
   image: 13.232.182.42:8082/alpine-eia
   script:
     - kubectl get nodes
-    - exit 1
     - helm repo add chartmuseum http://13.232.182.42:8080
     - helm search chartmuseum/
     - install_tiller
