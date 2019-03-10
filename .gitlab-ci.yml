@@ -54,13 +54,10 @@ deployment-uat:
   stage: deploy_uat
   image: 13.232.182.42:8082/alpine-eia
   script:
+    - kubectl get nodes
+    - exit 1
     - helm repo add chartmuseum http://13.232.182.42:8080
     - helm search chartmuseum/
-    - exit 1
-    - git clone https://github.com/pawankmr301/helmchart.git
-    - mkdir .kube
-    - cp helmchart/config .kube/config
-    - export KUBECONFIG=.kube/config
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
