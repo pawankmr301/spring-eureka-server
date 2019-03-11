@@ -1,4 +1,4 @@
-image: 13.232.182.42:8082/alpine-eia:latest
+    image: 13.232.182.42:8082/alpine-eia:latest
 
 stages:
     - build_artifact
@@ -55,7 +55,7 @@ deployment-uat:
     - helm repo add chartmuseum http://13.232.182.42:8080
     - helm search chartmuseum/
     - helm fetch chartmuseum/amway-chart
-    - helm lint amwaychart
+    - helm lint amway-chart
     - install_tiller
     - export_kubeconfig
     - ensure_namespace
@@ -100,7 +100,7 @@ deployment-uat:
       if [[ `kubectl get clusterrolebinding | grep  tiller-cluster-rule | wc -l ` -eq 0 ]]
       then
           echo "Lets create the clusterrolebinding"
-          echo "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller "
+          kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
       else
           echo "clusterrolebinding Already Created"
       fi
@@ -111,11 +111,11 @@ deployment-uat:
   }
 
   function deploy_helm () {
-    helm lint amwaychart
-    helm template amwaychart
+    helm lint amway-chart
+    helm template amway-chart
     echo "Let's Deploy the Service on Kubernetes Cluster using Helm"
     #helm del --purge amway 
-    helm install --name amway amwaychart -n kube-system
+    helm install --name amway amway-chart
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
 
