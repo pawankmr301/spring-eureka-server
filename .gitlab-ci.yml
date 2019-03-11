@@ -89,10 +89,10 @@ deployment-uat:
       #wget http://$ipaddress:8081/repository/testrepo/rbac-config.yaml
       #wget -c  http://$ipaddress:8081/repository/testrepo/config -O .kube/config
 
-      if [[  `kubectl get  serviceaccount --namespace default tiller  | grep tiller | wc -l ` -eq 0 ]]
+      if [[  `kubectl get  serviceaccount --namespace kube-system tiller  | grep tiller | wc -l ` -eq 0 ]]
       then
           echo "Let's Create the Tiller service account"
-          kubectl create serviceaccount --namespace default tiller 
+          kubectl create serviceaccount --namespace kube-system tiller 
       else
           echo "Tiller service account Already there"
       fi
@@ -100,14 +100,14 @@ deployment-uat:
       if [[ `kubectl get clusterrolebinding | grep  tiller-cluster-rule | wc -l ` -eq 0 ]]
       then
           echo "Lets create the clusterrolebinding"
-          echo "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=default:tiller "
+          echo "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller "
       else
           echo "clusterrolebinding Already Created"
       fi
       
           echo "Let's wait for 10 second `date`" ; sleep 10
           helm init --service-account tiller --upgrade
-          kubectl patch deploy --namespace default tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}' 
+          kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}' 
   }
 
   function deploy_helm () {
@@ -115,7 +115,7 @@ deployment-uat:
     helm template amwaychart
     echo "Let's Deploy the Service on Kubernetes Cluster using Helm"
     #helm del --purge amway 
-    helm install --name amway amwaychart
+    helm install --name amway amwaychart -n kube-system
     #helm install --name amway amway-chart --set image.repository=pawankmr301/alpine-eia --set image.tag=latest --set service.type=LoadBalancer --set service.port=80
   }
 
