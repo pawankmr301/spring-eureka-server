@@ -37,7 +37,7 @@ build-docker-image:
     DOCKER_DRIVER: overlay2
     
   script:
-    - export DOCKER_HOST=tcp://13.233.186.32:2375
+    - export DOCKER_HOST=tcp://localhost:2375
     - cat /etc/docker/daemon.json
     - cat /root/.docker/config.json
     - docker build -t ${CI_PROJECT_NAME}:latest .
